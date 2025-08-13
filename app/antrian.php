@@ -20,14 +20,12 @@ switch($_GET['p']){
    $hasil=bukaquery($_sql);
    $data = array();
    while ($r = mysqli_fetch_array ($hasil)){
-      $r['text'] ="Selamat datang di Klinik Mitra Keluarga Papua || Tubuh Anda Adalah Dokter Yang Terbaik";
+      $r['text'] = "Selamat Datang di Rumah Sakit Bunda Pengharapan | 🏥 Jl. Tujuh Wali-Wali, Merauke, Papua Selatan | ☎️ Admisi: 0812 4039 5379 | 🚑 Ambulans: 0812 8667 8343 | 📢 Pengaduan: 082199313962";
       $data = $r;
    }  
    echo json_encode($data);
    break;
 
-
-   
    case 'panggil' :
 
     
