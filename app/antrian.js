@@ -53,6 +53,33 @@ $(document).ready(function () {
   pengaturan();
 });
 //=========================================================================
+// Fungsi ubah singkatan
+function ubahSingkatan(teks) {
+  // Daftar singkatan dan penggantiannya
+  const kamus = {
+    sdr: "saudara",
+    sdri: "saudari",
+    tn: "tuan",
+    ny: "nyonya",
+    an: "anak",
+    by: "bayi",
+    dr: "dokter",
+    pst: "pastor",
+    sr: "suster",
+  };
+
+  let hasil = teks;
+
+  // Ganti semua singkatan tanpa peduli huruf besar/kecil
+  for (let singkatan in kamus) {
+    let regex = new RegExp("\\b" + singkatan + "\\.?\\b", "gi");
+    hasil = hasil.replace(regex, kamus[singkatan]);
+  }
+
+  return hasil;
+}
+
+//=========================================================================
 // Fungsi pemanggil
 function Suara() {
   $.ajax({
@@ -92,9 +119,21 @@ function Suara() {
           var audio = document.getElementById("KasirAudio");
           audio.onended = function () {
             // Callback yang akan dijalankan setelah audio selesai
+            // responsiveVoice.speak(
+            //   "Atas nama " +
+            //     item.nm_pasien.toLowerCase() +
+            //     ", Silahkan menuju " +
+            //     item.nm_poli.toLowerCase(),
+            //   "Indonesian Female",
+            //   {
+            //     pitch: 1,
+            //     rate: 0.9,
+            //     volume: 1,
+            //   }
+            // );
             responsiveVoice.speak(
               "Atas nama " +
-                item.nm_pasien.toLowerCase() +
+                ubahSingkatan(item.nm_pasien.toLowerCase()) + // <-- diproses dulu
                 ", Silahkan menuju " +
                 item.nm_poli.toLowerCase(),
               "Indonesian Female",
@@ -109,13 +148,25 @@ function Suara() {
           var audio = document.getElementById("LoketAudio");
           audio.onended = function () {
             // Callback yang akan dijalankan setelah audio selesai
+            // responsiveVoice.speak(
+            //   "Atas nama " +
+            //     item.nm_pasien.toLowerCase() +
+            //     ", Silahkan menuju " +
+            //     item.nm_poli.toLowerCase() +
+            //     " " +
+            //     item.kd_loket.toLowerCase(),
+            //   "Indonesian Female",
+            //   {
+            //     pitch: 1,
+            //     rate: 0.9,
+            //     volume: 1,
+            //   }
+            // );
             responsiveVoice.speak(
               "Atas nama " +
-                item.nm_pasien.toLowerCase() +
+                ubahSingkatan(item.nm_pasien.toLowerCase()) + // <-- diproses dulu
                 ", Silahkan menuju " +
-                item.nm_poli.toLowerCase() +
-                " " +
-                item.kd_loket.toLowerCase(),
+                item.nm_poli.toLowerCase(),
               "Indonesian Female",
               {
                 pitch: 1,
@@ -128,9 +179,21 @@ function Suara() {
           var audio = document.getElementById("myAudio");
           audio.onended = function () {
             // Callback yang akan dijalankan setelah audio selesai
+            // responsiveVoice.speak(
+            //   "Atas nama " +
+            //     item.nm_pasien.toLowerCase() +
+            //     ", Silahkan menuju " +
+            //     item.nm_poli.toLowerCase(),
+            //   "Indonesian Female",
+            //   {
+            //     pitch: 1,
+            //     rate: 0.9,
+            //     volume: 1,
+            //   }
+            // );
             responsiveVoice.speak(
               "Atas nama " +
-                item.nm_pasien.toLowerCase() +
+                ubahSingkatan(item.nm_pasien.toLowerCase()) + // <-- diproses dulu
                 ", Silahkan menuju " +
                 item.nm_poli.toLowerCase(),
               "Indonesian Female",
@@ -175,8 +238,8 @@ function Suara() {
         $.each(item.data_pasien, function (index, pasien) {
           var antrian_pasien = $(
             "<h2>" +
-              pasien.kd_poli +
-              "-" +
+              // pasien.kd_poli +
+              // "-" +
               pasien.no_reg +
               "</h2>" +
               "<h5>" +
@@ -211,8 +274,8 @@ function Suara() {
             item.nm_pasien +
             "</h3><br>" +
             "<h2 class='display-3'>" +
-            item.kd_poli +
-            "-" +
+            // item.kd_poli +
+            // "-" +
             item.no_reg +
             "</h2><br>" +
             "<b class='h3'>" +
