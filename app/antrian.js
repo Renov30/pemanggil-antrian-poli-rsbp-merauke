@@ -55,7 +55,6 @@ $(document).ready(function () {
 //=========================================================================
 // Fungsi ubah singkatan
 function ubahSingkatan(teks) {
-  // Daftar singkatan dan penggantiannya
   const kamus = {
     sdr: "saudara",
     sdri: "saudari",
@@ -70,13 +69,62 @@ function ubahSingkatan(teks) {
 
   let hasil = teks;
 
-  // Ganti semua singkatan tanpa peduli huruf besar/kecil
   for (let singkatan in kamus) {
     let regex = new RegExp("\\b" + singkatan + "\\.?\\b", "gi");
     hasil = hasil.replace(regex, kamus[singkatan]);
   }
 
   return hasil;
+}
+
+// Queue & status
+let antrianSuara = [];
+let sedangMain = false;
+
+// Fungsi untuk memutar panggilan berikutnya
+function putarBerikutnya() {
+  if (antrianSuara.length === 0) {
+    sedangMain = false;
+    return;
+  }
+
+  sedangMain = true;
+  let item = antrianSuara.shift(); // ambil data pertama dari queue
+
+  // Pilih audio sesuai poli
+  let audio;
+  if (item.nm_poli === "kasir") {
+    audio = document.getElementById("KasirAudio");
+  } else if (item.nm_poli === "loket") {
+    audio = document.getElementById("LoketAudio");
+  } else {
+    audio = document.getElementById("myAudio");
+  }
+
+  audio.onended = function () {
+    // Setelah notifikasi selesai, bicara nama pasien
+    responsiveVoice.speak(
+      "Atas nama " +
+        ubahSingkatan(item.nm_pasien.toLowerCase()) +
+        ", Silahkan menuju " +
+        item.nm_poli.toLowerCase() +
+        (item.nm_poli === "loket" && item.kd_loket
+          ? " " + item.kd_loket.toLowerCase()
+          : ""),
+      "Indonesian Female",
+      {
+        pitch: 1,
+        rate: 0.9,
+        volume: 1,
+        onend: function () {
+          // Setelah bicara selesai, putar panggilan berikutnya
+          putarBerikutnya();
+        },
+      }
+    );
+  };
+
+  audio.play();
 }
 
 //=========================================================================
@@ -90,127 +138,146 @@ function Suara() {
       var nomorAntrian = $("#suara");
       nomorAntrian.empty();
 
-      // $.each(data, function(index, item) {
-      //   // Suara notifikasi pemanggilan antrian
-      //   var audio = document.getElementById("myAudio");
-      //   audio.onended = function() {
-      //     // Callback yang akan dijalankan setelah audio selesai
-      //     responsiveVoice.speak(
-      //       "Atas nama " + item.nm_pasien.toLowerCase() +
-      //       ", Silahkan menuju " + item.nm_poli.toLowerCase(),
-      //       "Indonesian Female", {
-      //         pitch: 1,
-      //         rate: 0.9,
-      //         volume: 1
-      //       }
-      //     );
-      //   };
-      //   // Memainkan suara notifikasi
-      //   audio.play();
-
-      // });
-
       $.each(data, function (index, item) {
-        // Suara notifikasi pemanggilan antrian
-
-        // Set elementId based on item.nm_poli
-        var elementId;
-        if (item.nm_poli === "kasir") {
-          var audio = document.getElementById("KasirAudio");
-          audio.onended = function () {
-            // Callback yang akan dijalankan setelah audio selesai
-            // responsiveVoice.speak(
-            //   "Atas nama " +
-            //     item.nm_pasien.toLowerCase() +
-            //     ", Silahkan menuju " +
-            //     item.nm_poli.toLowerCase(),
-            //   "Indonesian Female",
-            //   {
-            //     pitch: 1,
-            //     rate: 0.9,
-            //     volume: 1,
-            //   }
-            // );
-            responsiveVoice.speak(
-              "Atas nama " +
-                ubahSingkatan(item.nm_pasien.toLowerCase()) + // <-- diproses dulu
-                ", Silahkan menuju " +
-                item.nm_poli.toLowerCase(),
-              "Indonesian Female",
-              {
-                pitch: 1,
-                rate: 0.9,
-                volume: 1,
-              }
-            );
-          };
-        } else if (item.nm_poli === "loket") {
-          var audio = document.getElementById("LoketAudio");
-          audio.onended = function () {
-            // Callback yang akan dijalankan setelah audio selesai
-            // responsiveVoice.speak(
-            //   "Atas nama " +
-            //     item.nm_pasien.toLowerCase() +
-            //     ", Silahkan menuju " +
-            //     item.nm_poli.toLowerCase() +
-            //     " " +
-            //     item.kd_loket.toLowerCase(),
-            //   "Indonesian Female",
-            //   {
-            //     pitch: 1,
-            //     rate: 0.9,
-            //     volume: 1,
-            //   }
-            // );
-            responsiveVoice.speak(
-              "Atas nama " +
-                ubahSingkatan(item.nm_pasien.toLowerCase()) + // <-- diproses dulu
-                ", Silahkan menuju " +
-                item.nm_poli.toLowerCase(),
-              "Indonesian Female",
-              {
-                pitch: 1,
-                rate: 0.9,
-                volume: 1,
-              }
-            );
-          };
-        } else {
-          var audio = document.getElementById("myAudio");
-          audio.onended = function () {
-            // Callback yang akan dijalankan setelah audio selesai
-            // responsiveVoice.speak(
-            //   "Atas nama " +
-            //     item.nm_pasien.toLowerCase() +
-            //     ", Silahkan menuju " +
-            //     item.nm_poli.toLowerCase(),
-            //   "Indonesian Female",
-            //   {
-            //     pitch: 1,
-            //     rate: 0.9,
-            //     volume: 1,
-            //   }
-            // );
-            responsiveVoice.speak(
-              "Atas nama " +
-                ubahSingkatan(item.nm_pasien.toLowerCase()) + // <-- diproses dulu
-                ", Silahkan menuju " +
-                item.nm_poli.toLowerCase(),
-              "Indonesian Female",
-              {
-                pitch: 1,
-                rate: 0.9,
-                volume: 1,
-              }
-            );
-          };
-        }
-
-        // Memainkan suara notifikasi
-        audio.play();
+        // Masukkan data ke queue
+        antrianSuara.push(item);
       });
+
+      // Kalau tidak ada audio yang sedang main, mulai putar
+      if (!sedangMain) {
+        putarBerikutnya();
+      }
     },
   });
+  // $.ajax({
+  //   url: "app/antrian.php?p=panggil",
+  //   type: "GET",
+  //   dataType: "json",
+  //   success: function (data) {
+  //     var nomorAntrian = $("#suara");
+  //     nomorAntrian.empty();
+
+  //     // $.each(data, function(index, item) {
+  //     //   // Suara notifikasi pemanggilan antrian
+  //     //   var audio = document.getElementById("myAudio");
+  //     //   audio.onended = function() {
+  //     //     // Callback yang akan dijalankan setelah audio selesai
+  //     //     responsiveVoice.speak(
+  //     //       "Atas nama " + item.nm_pasien.toLowerCase() +
+  //     //       ", Silahkan menuju " + item.nm_poli.toLowerCase(),
+  //     //       "Indonesian Female", {
+  //     //         pitch: 1,
+  //     //         rate: 0.9,
+  //     //         volume: 1
+  //     //       }
+  //     //     );
+  //     //   };
+  //     //   // Memainkan suara notifikasi
+  //     //   audio.play();
+
+  //     // });
+
+  //     $.each(data, function (index, item) {
+  //       // Suara notifikasi pemanggilan antrian
+
+  //       // Set elementId based on item.nm_poli
+  //       var elementId;
+  //       if (item.nm_poli === "kasir") {
+  //         var audio = document.getElementById("KasirAudio");
+  //         audio.onended = function () {
+  //           // Callback yang akan dijalankan setelah audio selesai
+  //           // responsiveVoice.speak(
+  //           //   "Atas nama " +
+  //           //     item.nm_pasien.toLowerCase() +
+  //           //     ", Silahkan menuju " +
+  //           //     item.nm_poli.toLowerCase(),
+  //           //   "Indonesian Female",
+  //           //   {
+  //           //     pitch: 1,
+  //           //     rate: 0.9,
+  //           //     volume: 1,
+  //           //   }
+  //           // );
+  //           responsiveVoice.speak(
+  //             "Atas nama " +
+  //               ubahSingkatan(item.nm_pasien.toLowerCase()) + // <-- diproses dulu
+  //               ", Silahkan menuju " +
+  //               item.nm_poli.toLowerCase(),
+  //             "Indonesian Female",
+  //             {
+  //               pitch: 1,
+  //               rate: 0.9,
+  //               volume: 1,
+  //             }
+  //           );
+  //         };
+  //       } else if (item.nm_poli === "loket") {
+  //         var audio = document.getElementById("LoketAudio");
+  //         audio.onended = function () {
+  //           // Callback yang akan dijalankan setelah audio selesai
+  //           // responsiveVoice.speak(
+  //           //   "Atas nama " +
+  //           //     item.nm_pasien.toLowerCase() +
+  //           //     ", Silahkan menuju " +
+  //           //     item.nm_poli.toLowerCase() +
+  //           //     " " +
+  //           //     item.kd_loket.toLowerCase(),
+  //           //   "Indonesian Female",
+  //           //   {
+  //           //     pitch: 1,
+  //           //     rate: 0.9,
+  //           //     volume: 1,
+  //           //   }
+  //           // );
+  //           responsiveVoice.speak(
+  //             "Atas nama " +
+  //               ubahSingkatan(item.nm_pasien.toLowerCase()) + // <-- diproses dulu
+  //               ", Silahkan menuju " +
+  //               item.nm_poli.toLowerCase(),
+  //             "Indonesian Female",
+  //             {
+  //               pitch: 1,
+  //               rate: 0.9,
+  //               volume: 1,
+  //             }
+  //           );
+  //         };
+  //       } else {
+  //         var audio = document.getElementById("myAudio");
+  //         audio.onended = function () {
+  //           // Callback yang akan dijalankan setelah audio selesai
+  //           // responsiveVoice.speak(
+  //           //   "Atas nama " +
+  //           //     item.nm_pasien.toLowerCase() +
+  //           //     ", Silahkan menuju " +
+  //           //     item.nm_poli.toLowerCase(),
+  //           //   "Indonesian Female",
+  //           //   {
+  //           //     pitch: 1,
+  //           //     rate: 0.9,
+  //           //     volume: 1,
+  //           //   }
+  //           // );
+  //           responsiveVoice.speak(
+  //             "Atas nama " +
+  //               ubahSingkatan(item.nm_pasien.toLowerCase()) + // <-- diproses dulu
+  //               ", Silahkan menuju " +
+  //               item.nm_poli.toLowerCase(),
+  //             "Indonesian Female",
+  //             {
+  //               pitch: 1,
+  //               rate: 0.9,
+  //               volume: 1,
+  //             }
+  //           );
+  //         };
+  //       }
+
+  //       // Memainkan suara notifikasi
+  //       audio.play();
+  //     });
+  //   },
+  // });
 
   //========================================================================
   //==display poli==
