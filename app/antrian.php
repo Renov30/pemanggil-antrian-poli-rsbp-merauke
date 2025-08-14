@@ -5,7 +5,6 @@ date_default_timezone_set('Asia/Jayapura');
  
 if(isset($_GET['p'])) {	 
 //kode poli yang ingin ditampilkan
-// $poli="'UMU','GIG','INT','BED'";
 $poli="'ANA','BED','GIG','GIZ','HOME','IGDK','INT','JIW','JNZ','LAB','MAT','OBG','ORT','PAR','RAD','RSM','UMU'";
 //jam reset antrian
 $jamreset='23:00:00';

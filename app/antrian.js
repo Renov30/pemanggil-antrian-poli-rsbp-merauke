@@ -77,11 +77,9 @@ function ubahSingkatan(teks) {
   return hasil;
 }
 
-// Queue & status
 let antrianSuara = [];
 let sedangMain = false;
 
-// Fungsi untuk memutar panggilan berikutnya
 function putarBerikutnya() {
   if (antrianSuara.length === 0) {
     sedangMain = false;
@@ -119,7 +117,6 @@ function putarBerikutnya() {
   }
 
   audio.onended = function () {
-    // Setelah notifikasi selesai, bicara nama pasien
     responsiveVoice.speak(
       "Atas nama " +
         ubahSingkatan(item.nm_pasien.toLowerCase()) +
@@ -134,7 +131,6 @@ function putarBerikutnya() {
         rate: 0.9,
         volume: 1,
         onend: function () {
-          // Setelah bicara selesai, putar panggilan berikutnya
           putarBerikutnya();
         },
       }
@@ -210,40 +206,6 @@ function Suara() {
   });
 
   //=======================================================================
-
-  //=======================================================================
-  // Fungsi display nomor
-
-  // $.ajax({
-  //   url: "app/antrian.php?p=nomor",
-  //   type: "GET",
-  //   dataType: "json",
-  //   success: function (data) {
-  //     var nomorAntrian = $("#nomor");
-  //     nomorAntrian.empty();
-  //     // Mengosongkan data sebelum menambahkan yang baru
-  //     // Loop melalui data dan menambahkannya ke tampilan
-  //     $.each(data, function (index, item) {
-  //       var antrian = $(
-  //         "<h3 >" +
-  //           item.nm_pasien +
-  //           "</h3><br>" +
-  //           "<h2 class='display-3'>" +
-  //           // item.kd_poli +
-  //           // "-" +
-  //           item.no_reg +
-  //           "</h2><br>" +
-  //           "<b class='h3'>" +
-  //           item.nm_poli +
-  //           "</b><br><b class='h4'>" +
-  //           item.nm_dokter +
-  //           "</b>"
-  //       );
-  //       nomorAntrian.append(antrian);
-  //     });
-  //   },
-  // });
-  //=========================================================================
 }
 //refresh otomatis setiap detik
 setInterval(Suara, 750);

@@ -2,8 +2,8 @@
 
 $db_hostname    = "localhost";
 $db_username    = "root";
-$db_password    = "mitra123";
-$db_name        = "mitra_db";
+$db_password    = "";
+$db_name        = "sik";
 
 define('USERHYBRIDWEB', 'yanghack');
 define('PASHYBRIDWEB', 'sialselamanya');
