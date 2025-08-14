@@ -132,8 +132,6 @@ WHERE d.kd_poli IN ($poli) and a.status = '1' LIMIT 1";
 
      
 case 'nomor' :    
-
-
  $_sql="SELECT b.no_reg, a.status, d.nm_poli, c.nm_pasien, a.no_rawat, a.kd_dokter, e.nm_dokter, b.kd_poli FROM antripoli a
 INNER JOIN
  reg_periksa b ON a.no_rawat = b.no_rawat
@@ -173,6 +171,8 @@ $jam=date('H:i:s');
 if($jam>$jamreset){
   bukaquery2("delete from antripoli");
 }
+$tanggalHariIni = date('Y-m-d');
+bukaquery2("DELETE FROM antripoli WHERE tanggal <> '$tanggalHariIni'");
 
 
 $hari=getOne("select DAYNAME(current_date())");

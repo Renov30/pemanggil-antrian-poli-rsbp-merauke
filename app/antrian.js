@@ -91,6 +91,23 @@ function putarBerikutnya() {
   sedangMain = true;
   let item = antrianSuara.shift(); // ambil data pertama dari queue
 
+  var nomorAntrian = $("#nomor");
+  nomorAntrian.empty();
+  var antrian = $(
+    "<h3>" +
+      item.nm_pasien +
+      "</h3><br>" +
+      "<h2 class='display-3'>" +
+      item.no_reg +
+      "</h2><br>" +
+      "<b class='h3'>" +
+      item.nm_poli +
+      "</b><br><b class='h4'>" +
+      item.nm_dokter +
+      "</b>"
+  );
+  nomorAntrian.append(antrian);
+
   // Pilih audio sesuai poli
   let audio;
   if (item.nm_poli === "kasir") {
@@ -135,8 +152,8 @@ function Suara() {
     type: "GET",
     dataType: "json",
     success: function (data) {
-      var nomorAntrian = $("#suara");
-      nomorAntrian.empty();
+      // var nomorAntrian = $("#suara");
+      // nomorAntrian.empty();
 
       $.each(data, function (index, item) {
         // Masukkan data ke queue
@@ -149,135 +166,6 @@ function Suara() {
       }
     },
   });
-  // $.ajax({
-  //   url: "app/antrian.php?p=panggil",
-  //   type: "GET",
-  //   dataType: "json",
-  //   success: function (data) {
-  //     var nomorAntrian = $("#suara");
-  //     nomorAntrian.empty();
-
-  //     // $.each(data, function(index, item) {
-  //     //   // Suara notifikasi pemanggilan antrian
-  //     //   var audio = document.getElementById("myAudio");
-  //     //   audio.onended = function() {
-  //     //     // Callback yang akan dijalankan setelah audio selesai
-  //     //     responsiveVoice.speak(
-  //     //       "Atas nama " + item.nm_pasien.toLowerCase() +
-  //     //       ", Silahkan menuju " + item.nm_poli.toLowerCase(),
-  //     //       "Indonesian Female", {
-  //     //         pitch: 1,
-  //     //         rate: 0.9,
-  //     //         volume: 1
-  //     //       }
-  //     //     );
-  //     //   };
-  //     //   // Memainkan suara notifikasi
-  //     //   audio.play();
-
-  //     // });
-
-  //     $.each(data, function (index, item) {
-  //       // Suara notifikasi pemanggilan antrian
-
-  //       // Set elementId based on item.nm_poli
-  //       var elementId;
-  //       if (item.nm_poli === "kasir") {
-  //         var audio = document.getElementById("KasirAudio");
-  //         audio.onended = function () {
-  //           // Callback yang akan dijalankan setelah audio selesai
-  //           // responsiveVoice.speak(
-  //           //   "Atas nama " +
-  //           //     item.nm_pasien.toLowerCase() +
-  //           //     ", Silahkan menuju " +
-  //           //     item.nm_poli.toLowerCase(),
-  //           //   "Indonesian Female",
-  //           //   {
-  //           //     pitch: 1,
-  //           //     rate: 0.9,
-  //           //     volume: 1,
-  //           //   }
-  //           // );
-  //           responsiveVoice.speak(
-  //             "Atas nama " +
-  //               ubahSingkatan(item.nm_pasien.toLowerCase()) + // <-- diproses dulu
-  //               ", Silahkan menuju " +
-  //               item.nm_poli.toLowerCase(),
-  //             "Indonesian Female",
-  //             {
-  //               pitch: 1,
-  //               rate: 0.9,
-  //               volume: 1,
-  //             }
-  //           );
-  //         };
-  //       } else if (item.nm_poli === "loket") {
-  //         var audio = document.getElementById("LoketAudio");
-  //         audio.onended = function () {
-  //           // Callback yang akan dijalankan setelah audio selesai
-  //           // responsiveVoice.speak(
-  //           //   "Atas nama " +
-  //           //     item.nm_pasien.toLowerCase() +
-  //           //     ", Silahkan menuju " +
-  //           //     item.nm_poli.toLowerCase() +
-  //           //     " " +
-  //           //     item.kd_loket.toLowerCase(),
-  //           //   "Indonesian Female",
-  //           //   {
-  //           //     pitch: 1,
-  //           //     rate: 0.9,
-  //           //     volume: 1,
-  //           //   }
-  //           // );
-  //           responsiveVoice.speak(
-  //             "Atas nama " +
-  //               ubahSingkatan(item.nm_pasien.toLowerCase()) + // <-- diproses dulu
-  //               ", Silahkan menuju " +
-  //               item.nm_poli.toLowerCase(),
-  //             "Indonesian Female",
-  //             {
-  //               pitch: 1,
-  //               rate: 0.9,
-  //               volume: 1,
-  //             }
-  //           );
-  //         };
-  //       } else {
-  //         var audio = document.getElementById("myAudio");
-  //         audio.onended = function () {
-  //           // Callback yang akan dijalankan setelah audio selesai
-  //           // responsiveVoice.speak(
-  //           //   "Atas nama " +
-  //           //     item.nm_pasien.toLowerCase() +
-  //           //     ", Silahkan menuju " +
-  //           //     item.nm_poli.toLowerCase(),
-  //           //   "Indonesian Female",
-  //           //   {
-  //           //     pitch: 1,
-  //           //     rate: 0.9,
-  //           //     volume: 1,
-  //           //   }
-  //           // );
-  //           responsiveVoice.speak(
-  //             "Atas nama " +
-  //               ubahSingkatan(item.nm_pasien.toLowerCase()) + // <-- diproses dulu
-  //               ", Silahkan menuju " +
-  //               item.nm_poli.toLowerCase(),
-  //             "Indonesian Female",
-  //             {
-  //               pitch: 1,
-  //               rate: 0.9,
-  //               volume: 1,
-  //             }
-  //           );
-  //         };
-  //       }
-
-  //       // Memainkan suara notifikasi
-  //       audio.play();
-  //     });
-  //   },
-  // });
 
   //========================================================================
   //==display poli==
@@ -326,35 +214,35 @@ function Suara() {
   //=======================================================================
   // Fungsi display nomor
 
-  $.ajax({
-    url: "app/antrian.php?p=nomor",
-    type: "GET",
-    dataType: "json",
-    success: function (data) {
-      var nomorAntrian = $("#nomor");
-      nomorAntrian.empty();
-      // Mengosongkan data sebelum menambahkan yang baru
-      // Loop melalui data dan menambahkannya ke tampilan
-      $.each(data, function (index, item) {
-        var antrian = $(
-          "<h3 >" +
-            item.nm_pasien +
-            "</h3><br>" +
-            "<h2 class='display-3'>" +
-            // item.kd_poli +
-            // "-" +
-            item.no_reg +
-            "</h2><br>" +
-            "<b class='h3'>" +
-            item.nm_poli +
-            "</b><br><b class='h4'>" +
-            item.nm_dokter +
-            "</b>"
-        );
-        nomorAntrian.append(antrian);
-      });
-    },
-  });
+  // $.ajax({
+  //   url: "app/antrian.php?p=nomor",
+  //   type: "GET",
+  //   dataType: "json",
+  //   success: function (data) {
+  //     var nomorAntrian = $("#nomor");
+  //     nomorAntrian.empty();
+  //     // Mengosongkan data sebelum menambahkan yang baru
+  //     // Loop melalui data dan menambahkannya ke tampilan
+  //     $.each(data, function (index, item) {
+  //       var antrian = $(
+  //         "<h3 >" +
+  //           item.nm_pasien +
+  //           "</h3><br>" +
+  //           "<h2 class='display-3'>" +
+  //           // item.kd_poli +
+  //           // "-" +
+  //           item.no_reg +
+  //           "</h2><br>" +
+  //           "<b class='h3'>" +
+  //           item.nm_poli +
+  //           "</b><br><b class='h4'>" +
+  //           item.nm_dokter +
+  //           "</b>"
+  //       );
+  //       nomorAntrian.append(antrian);
+  //     });
+  //   },
+  // });
   //=========================================================================
 }
 //refresh otomatis setiap detik
